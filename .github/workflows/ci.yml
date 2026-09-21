@@ -1,0 +1,32 @@
+name: JavaFX CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Download JavaFX
+        run: |
+          wget https://download2.gluonhq.com/openjfx/21.0.8/openjfx-21.0.8_linux-x64_bin-sdk.zip
+          unzip openjfx-21.0.8_linux-x64_bin-sdk.zip
+
+      - name: Compile JavaFX project
+        run: |
+          mkdir -p out
+          javac --module-path javafx-sdk-21.0.8/lib \
+            --add-modules javafx.controls,javafx.fxml \
+            -d out *.java
